@@ -12,20 +12,26 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        let frame = UIScreen.main.bounds
         view.backgroundColor = UIColor.primary
+        let text = UITextField(frame: frame)
+        view.addSubview(text)
         let session = URLSession.shared
         let genreId = 100227
         let applicationId = ProcessInfo.processInfo.environment["APPLICATION_ID"]!
         let url = URL(string: "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?format=json&genreId=\(genreId)&applicationId=\(applicationId)")!
         let task = session.dataTask(with: url, completionHandler:{ data, response, error in
-            if let d = data {
-                print(d)
-            }
-            if let r = response {
-                print(r)
-            }
-            if let e = error {
-                print(e)
+            DispatchQueue.main.async {
+                if let d = data, let dataString = String(data: d, encoding: .utf8) {
+                    print(dataString)
+                    text.text = dataString
+                }
+                if let r = response {
+                    print(r)
+                }
+                if let e = error {
+                    print(e)
+                }
             }
         })
 
